@@ -8,12 +8,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef __WATCOMC__
-#ifndef __LINUX__
-#include <io.h>
-#else
-#include <unistd.h>
+/* Functions close(2) and read(2) */
+#if ! defined(_WIN32) && ! defined(_WIN64)
+#  include <unistd.h>
 #endif
+
+/* Function "read": */
+#if defined(_MSC_VER)
+#  include <io.h>
+/* https://msdn.microsoft.com/en-us/library/wyssk1bs(v=vs.100).aspx */
+#  define _EXPAT_read _read
+#  define _EXPAT_read_count_t int
+#  define _EXPAT_read_req_t unsigned int
+#else /* POSIX */
+/* http://pubs.opengroup.org/onlinepubs/009695399/functions/read.html */
+#  define _EXPAT_read read
+#  define _EXPAT_read_count_t ssize_t
+#  define _EXPAT_read_req_t size_t
 #endif
 
 #ifdef __BEOS__
